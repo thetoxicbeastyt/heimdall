@@ -1,0 +1,189 @@
+# Heimdall - Debrid Media Manager - Cursor Rules
+
+## Tech Stack
+- Next.js 14+ with App Router
+- TypeScript (strict mode)
+- Tailwind CSS
+- Supabase for database and auth
+- shadcn/ui components
+- Framer Motion for animations
+- React Query for data fetching
+
+## Core Development Rules
+
+### 1. Server vs Client Components
+- **ALWAYS** use Server Components by default
+- Only use Client Components when needed for:
+  - useState, useEffect hooks
+  - Event handlers (onClick, onChange, etc.)
+  - Browser APIs (localStorage, window, etc.)
+  - Interactive animations
+- Mark Client Components with 'use client' directive at top of file
+
+### 2. Frosted Glass Design System
+- Primary glass effect: `backdrop-blur-xl bg-white/10 dark:bg-gray-900/10 border border-white/20`
+- Hover states: `border-white/40` and `scale(1.02)`
+- Active states: Add subtle glow using `box-shadow`
+- All cards, modals, and overlays must use frosted glass pattern
+- Consistent transitions: `transition-all duration-300`
+
+### 3. Async Operations & Loading States
+- Every async operation MUST have loading state
+- Use skeleton loaders, never empty content while loading
+- Implement Suspense boundaries for server components
+- Show progress indicators for long operations
+- Handle loading, error, and success states explicitly
+
+### 4. Error Handling
+- Error boundaries for all major components
+- User-friendly error messages, not raw error objects
+- Graceful degradation when services are unavailable
+- Toast notifications for user actions feedback
+- Retry mechanisms for failed API calls
+
+### 5. TypeScript Standards
+- Strict mode enabled - no 'any' types allowed
+- Define interfaces for all data structures
+- Use Zod for API request/response validation
+- Generic types for reusable components
+- Proper return type annotations for functions
+
+### 6. Accessibility
+- Semantic HTML elements (header, nav, main, section, article)
+- ARIA labels for interactive elements
+- Keyboard navigation support
+- Focus management for modals and dropdowns
+- Alt text for images
+- Color contrast compliance
+
+### 7. Responsive Design
+- Mobile-first approach
+- Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
+- Touch-friendly interface elements (min 44px touch targets)
+- Fluid typography using clamp()
+- Grid layouts that collapse on mobile
+
+### 8. Performance Optimization
+- Core Web Vitals compliance
+- Lazy load images with next/image
+- Dynamic imports for heavy components
+- Virtualized lists for large datasets
+- Bundle size optimization
+- Preload critical resources
+
+### 9. Security & Environment
+- All API keys in environment variables
+- No sensitive data in client-side code
+- Rate limiting on API routes
+- Input sanitization and validation
+- Secure HTTP headers
+- CORS properly configured
+
+### 10. API & Rate Limiting
+- Implement rate limiting on all API routes
+- Cache frequently accessed data
+- Debounce user inputs for search
+- Respect external API rate limits
+- Proper HTTP status codes
+- Error handling for network failures
+
+## File Organization
+
+### Component Structure
+```
+components/
+├── ui/           # Reusable UI components
+├── layout/       # Layout components (Header, Footer)
+├── media-manager/ # Feature-specific components
+└── shared/       # Cross-feature shared components
+```
+
+### API Routes
+```
+app/api/
+├── auth/         # Authentication endpoints
+├── media/        # Media search and streaming
+├── debrid/       # Debrid service integration
+└── user/         # User management
+```
+
+## Naming Conventions
+- Components: PascalCase (e.g., MediaCard, SearchResults)
+- Files: kebab-case (e.g., media-card.tsx, search-results.tsx)
+- Variables/functions: camelCase
+- Constants: UPPER_SNAKE_CASE
+- API routes: kebab-case
+
+## State Management
+- React Query for server state
+- useState/useReducer for local component state
+- Context for global UI state (theme, modals)
+- No Redux unless specifically needed
+- Avoid duplicating server state in local state
+
+## Styling Guidelines
+- Tailwind CSS classes only
+- No custom CSS files unless absolutely necessary
+- Consistent spacing scale (4, 8, 16, 24, 32px)
+- Color palette using CSS variables for theme support
+- Animation using Framer Motion for complex animations
+
+## Import Order
+1. React and Next.js imports
+2. Third-party libraries
+3. Internal components
+4. Internal utilities and types
+5. Relative imports
+
+## Common Patterns to Follow
+
+### Frosted Glass Card
+```tsx
+<div className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/10 border border-white/20 rounded-lg p-6 hover:border-white/40 hover:scale-[1.02] transition-all duration-300">
+  {/* Content */}
+</div>
+```
+
+### Loading Skeleton
+```tsx
+<div className="animate-pulse backdrop-blur-xl bg-white/5 dark:bg-gray-900/5 rounded-lg h-32" />
+```
+
+### Error Boundary Pattern
+```tsx
+'use client'
+export default function ErrorBoundary({ error, reset }: { error: Error, reset: () => void }) {
+  return (
+    <div className="backdrop-blur-xl bg-white/10 dark:bg-gray-900/10 border border-white/20 rounded-lg p-6 text-center">
+      <h2>Something went wrong!</h2>
+      <button onClick={reset}>Try again</button>
+    </div>
+  )
+}
+```
+
+## What NOT to Do
+- Don't use 'any' types
+- Don't create files without explicit request
+- Don't modify existing functionality unless asked
+- Don't use solid backgrounds on glass components
+- Don't expose API keys to client
+- Don't skip loading states
+- Don't ignore mobile responsiveness
+- Don't create unnecessary documentation files
+- Don't use inline styles
+- Don't skip TypeScript type definitions
+
+## Testing Requirements
+- Component testing with React Testing Library
+- API route testing with appropriate mocks
+- Type checking with TypeScript compiler
+- Accessibility testing with axe
+- Visual regression testing for UI components
+- Performance testing for Core Web Vitals
+
+## Git Commit Guidelines
+- Conventional commits format
+- Clear, descriptive commit messages
+- Atomic commits (one feature/fix per commit)
+- No commits to main without PR review
