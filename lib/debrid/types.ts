@@ -12,8 +12,8 @@ export interface DebridProvider {
 }
 
 export interface SearchOptions {
-  category?: 'all' | 'movies' | 'tv' | 'music' | 'games' | 'software' | 'books'
-  quality?: '4K' | '1080p' | '720p' | '480p' | 'any'
+  category?: 'all' | 'movies' | 'tv' | 'music' | 'games' | 'software' | 'books' | 'other'
+  quality?: '4K' | '2160p' | '1080p' | '720p' | '480p' | 'any'
   minSeeds?: number
   maxSize?: number // in GB
   sortBy?: 'relevance' | 'seeds' | 'size' | 'date'
@@ -228,3 +228,14 @@ export interface ProviderCapabilities {
 }
 
 export type ProviderName = 'real-debrid' | 'alldebrid' | 'premiumize' | 'debrid-link'
+
+export interface UserDebridAccount {
+  id: string;
+  user_id: string;
+  provider: string;
+  api_key: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  expires_at?: string;
+}

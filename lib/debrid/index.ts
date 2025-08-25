@@ -157,7 +157,7 @@ export class DebridManager {
     
     // Initialize result structure
     for (const hash of hashes) {
-      result[hash] = {}
+      result[hash] = {} as Record<ProviderName, InstantAvailability>
     }
 
     const providersToCheck = providerName 

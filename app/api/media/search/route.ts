@@ -5,7 +5,7 @@ import { searchRateLimiter } from '@/lib/rate-limiter'
 import { searchCache, generateCacheKey } from '@/lib/cache'
 import { serverDbService } from '@/lib/supabase/client'
 import { debridManager } from '@/lib/debrid'
-import type { DebridProvider, SearchResult as DebridSearchResult } from '@/lib/debrid/types'
+import type { DebridProvider, ProviderName, SearchResult as DebridSearchResult, UserDebridAccount } from '@/lib/debrid/types'
 
 // Request validation schema
 const SearchRequestSchema = z.object({
@@ -16,7 +16,7 @@ const SearchRequestSchema = z.object({
   filters: z.object({
     quality: z.enum(['any', '4K', '2160p', '1080p', '720p', '480p']).optional().default('any'),
     provider: z.enum(['all', 'real-debrid', 'alldebrid', 'premiumize']).optional().default('all'),
-    category: z.enum(['all', 'movie', 'tv', 'music', 'game', 'software', 'other']).optional().default('all')
+    category: z.enum(['all', 'movies', 'tv', 'music', 'games', 'software', 'other']).optional().default('all')
   }).optional().default({}),
   page: z.number()
     .int()
@@ -221,7 +221,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Check user has active debrid accounts
-    const { data: debridAccounts, error: dbError } = await serverDbService.getUserDebridAccounts(user.id)
+    const { data: debridAccounts, error: dbError }: { data: UserDebridAccount[] | null, error: any } = await serverDbService.getUserDebridAccounts(user.id)
     
     if (dbError || !debridAccounts || debridAccounts.length === 0) {
       return NextResponse.json({
@@ -267,7 +267,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const activeProviders: string[] = []
     for (const account of debridAccounts) {
       try {
-        await debridManager.initializeProvider(account.provider as DebridProvider, account.api_key)
+        await debridManager.initializeProvider(account.provider as ProviderName, account.api_key)
         activeProviders.push(account.provider)
       } catch (error) {
         console.error(`Failed to initialize ${account.provider}:`, error)
@@ -288,7 +288,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
       // Filter provider if specified
       const targetProvider = requestBody.filters.provider !== 'all' 
-        ? requestBody.filters.provider as DebridProvider
+        ? requestBody.filters.provider as ProviderName
         : undefined
 
       const searchOptions = {

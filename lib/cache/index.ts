@@ -105,7 +105,13 @@ export const userCache = new MemoryCache({
   ttl: 10 * 60 * 1000, // 10 minutes for user data
   max: 100,
   updateAgeOnGet: true
-})
+});
+
+export const streamCache = new MemoryCache({
+  ttl: 2 * 60 * 60 * 1000, // 2 hours
+  max: 100,
+  updateAgeOnGet: false
+});
 
 // Utility functions for cache key generation
 export const generateCacheKey = {
@@ -128,6 +134,10 @@ export const generateCacheKey = {
   
   user: (userId: string) => {
     return `user:${userId}`
+  },
+
+  stream: (id: string, fileIndex: number, provider: string) => {
+    return `stream:${provider}:${id}:${fileIndex}`
   }
 }
 

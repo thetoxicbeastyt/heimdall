@@ -59,16 +59,16 @@ export class DatabaseService {
   async addDebridAccount(account: Database['public']['Tables']['user_debrid_accounts']['Insert']) {
     return await this.client
       .from('user_debrid_accounts')
-      .insert(account)
+      .insert(account as any)
       .select()
       .single()
   }
 
   async updateDebridAccount(
     id: string, 
-    updates: Database['public']['Tables']['user_debrid_accounts']['Update']
+    updates: any
   ) {
-    return await this.client
+    return await (this.client as any)
       .from('user_debrid_accounts')
       .update(updates)
       .eq('id', id)
@@ -96,7 +96,7 @@ export class DatabaseService {
   async addSearchHistory(search: Database['public']['Tables']['user_search_history']['Insert']) {
     return await this.client
       .from('user_search_history')
-      .insert(search)
+      .insert(search as any)
       .select()
       .single()
   }
@@ -140,16 +140,16 @@ export class DatabaseService {
   async addDownload(download: Database['public']['Tables']['user_downloads']['Insert']) {
     return await this.client
       .from('user_downloads')
-      .insert(download)
+      .insert(download as any)
       .select()
       .single()
   }
 
   async updateDownload(
     id: string, 
-    updates: Database['public']['Tables']['user_downloads']['Update']
+    updates: any
   ) {
-    return await this.client
+    return await (this.client as any)
       .from('user_downloads')
       .update(updates)
       .eq('id', id)
@@ -168,15 +168,15 @@ export class DatabaseService {
   async addDownloadFiles(files: Database['public']['Tables']['download_files']['Insert'][]) {
     return await this.client
       .from('download_files')
-      .insert(files)
+      .insert(files as any)
       .select()
   }
 
   async updateDownloadFile(
     id: string,
-    updates: Database['public']['Tables']['download_files']['Update']
+    updates: any
   ) {
-    return await this.client
+    return await (this.client as any)
       .from('download_files')
       .update(updates)
       .eq('id', id)
@@ -195,9 +195,9 @@ export class DatabaseService {
 
   async updateUserPreferences(
     userId: string,
-    preferences: Database['public']['Tables']['user_preferences']['Update']
+    preferences: any
   ) {
-    return await this.client
+    return await (this.client as any)
       .from('user_preferences')
       .upsert({ ...preferences, user_id: userId })
       .select()
@@ -208,7 +208,7 @@ export class DatabaseService {
   async logApiUsage(log: Database['public']['Tables']['api_usage_logs']['Insert']) {
     return await this.client
       .from('api_usage_logs')
-      .insert(log)
+      .insert(log as any)
   }
 
   async getApiUsageStats(userId: string, days = 30) {

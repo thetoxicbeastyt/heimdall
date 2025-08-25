@@ -88,15 +88,14 @@ class TorrentPoller {
       }
 
       // Get torrent info from debrid service
-      const torrentInfo = await debridManager.getTorrentInfo(job.torrentId, job.provider)
+      const torrentInfo = await debridManager.getTorrentInfo(job.torrentId, job.provider as any)
       
       console.log(`Job ${job.id} - Status: ${torrentInfo.status}, Progress: ${torrentInfo.progress}%`)
 
       switch (torrentInfo.status) {
         case 'downloaded':
-        case 'completed':
           try {
-            const streamLink = await debridManager.getStreamLink(job.torrentId, 0, job.provider)
+            const streamLink = await debridManager.getStreamLink(job.torrentId, 0, job.provider as any)
             
             // Cache the stream link
             const cacheKey = `stream:${job.provider}:${job.torrentId}:0`
@@ -124,7 +123,7 @@ class TorrentPoller {
         case 'waiting_files_selection':
           // Auto-select all files if possible
           try {
-            const provider = debridManager['getProvider'](job.provider)
+            const provider = debridManager['getProvider'](job.provider as any)
             if (provider && 'selectFiles' in provider) {
               const fileIds = torrentInfo.files
                 .filter(f => f.selected || torrentInfo.files.length === 1)
@@ -207,7 +206,7 @@ class TorrentPoller {
     return Array.from(this.jobs.values()).map(job => ({
       id: job.id,
       torrentId: job.torrentId,
-      provider: job.provider,
+      provider: job.provider as unknown as string,
       userId: job.userId,
       retryCount: job.retryCount,
       elapsed: Date.now() - job.startTime
@@ -220,7 +219,7 @@ class TorrentPoller {
     this.stopPolling()
     
     // Notify all pending jobs
-    for (const [jobId, job] of this.jobs.entries()) {
+    for (const [jobId, job] of Array.from(this.jobs.entries())) {
       job.onError?.('Server shutting down')
     }
     

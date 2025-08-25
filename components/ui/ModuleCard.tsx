@@ -26,7 +26,7 @@ export function ModuleCard({
 
   return (
     <CardWrapper
-      href={comingSoon ? undefined : href}
+      {...(comingSoon ? {} : { href }) as any}
       className={cn(
         'group relative block',
         className

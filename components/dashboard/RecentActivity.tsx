@@ -360,6 +360,7 @@ export function RecentActivity({
             {searchHistory.length > 0 ? (
               <List
                 height={400}
+                width="100%"
                 itemCount={searchHistory.length}
                 itemSize={100}
                 className="scrollbar-thin"
@@ -383,6 +384,7 @@ export function RecentActivity({
             {downloadHistory.length > 0 ? (
               <List
                 height={400}
+                width="100%"
                 itemCount={downloadHistory.length}
                 itemSize={140}
                 className="scrollbar-thin"
@@ -406,6 +408,7 @@ export function RecentActivity({
             {watchHistory.length > 0 ? (
               <List
                 height={400}
+                width="100%"
                 itemCount={watchHistory.length}
                 itemSize={120}
                 className="scrollbar-thin"
